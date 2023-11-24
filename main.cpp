@@ -57,7 +57,7 @@ vector_d generateRandomSolutionVector(int size)
 
 int main(int arc, char** argv)
 {
-    int size = 200; // Размерность матрицы и вектора
+    int size = 4; // Размерность матрицы и вектора
 
     // Генерация матрицы с диагональным доминированием
     std::vector<vector_d> matrix = generateRandomMatrix(size);
@@ -101,7 +101,7 @@ int main(int arc, char** argv)
     printSolution(gaussianElimination(matrix, resultVector));
 
     // Вычисление определителя матрицы
-    std::cout << "Определитеель: " << det(matrix) << std::endl;
+    std::cout << "Определитель: " << det(matrix) << std::endl;
 
     // Нахождение числа обусловленности
     printVector(calculateResidualVector(matrix, methodJakob(matrix, resultVector), resultVector));

@@ -97,12 +97,7 @@ vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resu
     return x_k1;
 }
 
-void swapRows(std::vector<vector_d>& matrix, int row1, int row2)
-{
-    std::swap(matrix[row1], matrix[row2]);
-}
-
-void swap_rows(double** matrix, int row1, int row2, int n) {
+void swap_rows(std::vector<vector_d>& matrix, int row1, int row2, int n) {
     for (int i = 0; i <= n; i++) {
         double temp = matrix[row1][i];
         matrix[row1][i] = matrix[row2][i];
@@ -115,25 +110,35 @@ std::vector<vector_d> forwardElimination(const std::vector<vector_d>& Matrix)
     std::vector<vector_d> matrix(Matrix);
     int n = matrix.size();
 
-    for (size_t i = 0; i < n; i++)
-    {
-        int maxRow = i;
+    for (size_t i = 0; i < n; i++) {
+        // Поиск главного элемента в текущей подматрице
+        int max_row = i;
+        double max_val = std::abs(matrix[i][i]);
         for (size_t j = i + 1; j < n; j++)
         {
-            if (std::abs(matrix[j][i]) > std::abs(matrix[maxRow][i]))
+            for (size_t k = i + 1; k <= n; k++)
             {
-                maxRow = j;
+                if (std::abs(matrix[j][k]) > max_val)
+                {
+                    max_val = std::abs(matrix[j][k]);
+                    max_row = j;
+                }
             }
         }
 
-        swapRows(matrix, i, maxRow);
-
-        for (size_t j = i + 1; j < n; j++)
+        // Перестановка строк, если найденный главный элемент не находится на диагонали
+        if (max_row != i)
         {
-            double ratio = matrix[j][i] / matrix[i][i];
-            for (size_t k = i; k <= n; k++)
+            swap_rows(matrix, i, max_row, n);
+        }
+
+        // Приведение матрицы к треугольному виду
+        for (int j = i + 1; j < n; j++)
+        {
+            double factor = matrix[j][i] / matrix[i][i];
+            for (int k = i; k <= n; k++)
             {
-                matrix[j][k] -= ratio * matrix[i][k];
+                matrix[j][k] -= factor * matrix[i][k];
             }
         }
     }
