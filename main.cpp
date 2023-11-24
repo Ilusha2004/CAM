@@ -79,6 +79,7 @@ int main(int arc, char** argv)
     printVector(resultVector);
 
     std::cout << "Нахождение обратной матрицы: " << std:: endl;
+
     // Нахождение обратной матрицы
     printMatrix(InvertedMatrix(matrix));
 
@@ -104,6 +105,9 @@ int main(int arc, char** argv)
     std::cout << "Определитель: " << det(matrix) << std::endl;
 
     // Нахождение числа обусловленности
+    std::cout << "Число обусловленности: " << calculateConditionNumber(matrix) << std::endl;
+
+    std::cout << "Вектор невязки: " << std::endl;
     printVector(calculateResidualVector(matrix, methodJakob(matrix, resultVector), resultVector));
     printVector(calculateResidualVector(matrix, methodReflections(matrix, resultVector), resultVector));
     printVector(calculateResidualVector(matrix, gradientSolve(matrix, resultVector), resultVector));

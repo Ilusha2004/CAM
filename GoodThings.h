@@ -109,7 +109,6 @@ void printVector(const vector_d& vector)
 
 void printSolution(const vector_d& solution)
 {
-    std::cout << "Решение системы уравнений:" << std::endl;
     for (int i = 0; i < solution.size(); ++i)
     {
         std::cout << "x[" << i << "] = " << solution[i] << std::endl;
