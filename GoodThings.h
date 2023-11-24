@@ -153,19 +153,6 @@ double dotProduct(const vector_d leftVector, const vector_d rightVector, int ind
     return result;
 }
 
-// Функция для вычисления евклидовой нормы вектора
-double EuclideNorm(const vector_d& v)
-{
-    double sum = 0.0;
-
-    for (auto val : v)
-    {
-        sum += val * val;
-    }
-
-    return std::sqrt(sum);
-}
-
 std::vector<vector_d> multiplyMatrices(const std::vector<vector_d>& matrix1, const std::vector<vector_d>& matrix2)
 {
     int rows1 = matrix1.size();
