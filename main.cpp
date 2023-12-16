@@ -3,7 +3,7 @@
 #include "Methods.h"
 #include "GoodThings.h"
 
-typedef std::vector<double> vector_d;
+typedef std::vector<long double> vector_d;
 
 //---------------------------------------------------------------------------------------------------------------------------
 //
@@ -23,7 +23,7 @@ std::vector<vector_d> generateRandomMatrix(int size)
 
     for (size_t i = 0; i < size; i++)
     {
-        double sum = 0.0;
+        long double sum = 0.0;
 
         for (size_t j = 0; j < size; j++)
         {
@@ -57,7 +57,7 @@ vector_d generateRandomSolutionVector(int size)
 
 int main(int arc, char** argv)
 {
-    int size = 4; // Размерность матрицы и вектора
+    int size = 3; // Размерность матрицы и вектора
 
     // Генерация матрицы с диагональным доминированием
     std::vector<vector_d> matrix = generateRandomMatrix(size);
@@ -99,18 +99,21 @@ int main(int arc, char** argv)
     printSolution(gradVector);
 
     std::cout << "Решение методом Гаусса с выбором главного элемента по матрице: " << std::endl;
-    printSolution(gaussianElimination(matrix, resultVector));
+
+    vector_d gauseVector = gaussianElimination(matrix, resultVector);
+    printSolution(gauseVector);
 
     // Вычисление определителя матрицы
     std::cout << "Определитель: " << det(matrix) << std::endl;
 
+    printMatrix(multiplyMatrices(matrix, InvertedMatrix(matrix)));
     // Нахождение числа обусловленности
     std::cout << "Число обусловленности: " << calculateConditionNumber(matrix) << std::endl;
 
     std::cout << "Вектор невязки: " << std::endl;
-    printVector(calculateResidualVector(matrix, methodJakob(matrix, resultVector), resultVector));
-    printVector(calculateResidualVector(matrix, methodReflections(matrix, resultVector), resultVector));
-    printVector(calculateResidualVector(matrix, gradientSolve(matrix, resultVector), resultVector));
-    printVector(calculateResidualVector(matrix, gaussianElimination(matrix, resultVector), resultVector));
+    printVector(calculateResidualVector(matrix, JacobVector, resultVector));
+    printVector(calculateResidualVector(matrix, reflectVector, resultVector));
+    printVector(calculateResidualVector(matrix, gradVector, resultVector));
+    printVector(calculateResidualVector(matrix, gauseVector, resultVector));
 
 }

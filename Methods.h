@@ -8,10 +8,10 @@
 
 #include"GoodThings.h"
 
-typedef std::vector<double> vector_d;
+typedef std::vector<long double> vector_d;
 
 // метод простой итерации(метод Якоби)
-vector_d methodJakob(const std::vector<vector_d>& matrix, const vector_d& solveVector, double epsilon = 10e-4)
+vector_d methodJakob(const std::vector<vector_d>& matrix, const vector_d& solveVector, double epsilon = 10e-8)
 {
     std::vector<vector_d> B(matrix.size(), vector_d(matrix.size(), 0.0));
     vector_d d(matrix.size(), 0.0);
@@ -27,9 +27,11 @@ vector_d methodJakob(const std::vector<vector_d>& matrix, const vector_d& solveV
 
     vector_d x_k = solveVector;
     vector_d temp(matrix.size(), 0.0);
+    size_t iter = 0;
 
     while (true)
     {
+        iter++;
         vector_d x_k1(matrix.size(), 0.0);
 
         for (size_t i = 0; i < matrix.size(); i++)
@@ -41,10 +43,10 @@ vector_d methodJakob(const std::vector<vector_d>& matrix, const vector_d& solveV
             }
             x_k1[i] += d[i];
 
-            temp[i] = std::abs(x_k1[i] - x_k[i]);
+            temp[i] = x_k1[i] - x_k[i];
         }
 
-        if (norm(temp) < epsilon)
+        if (abs(norm(temp)) < epsilon)
         {
             break;
         }
@@ -54,19 +56,19 @@ vector_d methodJakob(const std::vector<vector_d>& matrix, const vector_d& solveV
 
     }
 
+    std::cout << "Iterations: " << iter << std::endl;
     return x_k;
 
 }
 
 // Градиентный спуск
-vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resultVector, size_t am_iter = 35U)
+vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resultVector, size_t am_iter = 50U)
 {
     vector_d x_k1(matrix.size(), 0.0);
     vector_d x_k = resultVector;
 
     for (size_t k = 0; k < am_iter; k++)
     {
-
         vector_d r_k = VectorProduct(matrix, x_k);
 
         for (size_t i = 0; i < r_k.size(); i++)
@@ -74,7 +76,15 @@ vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resu
             r_k[i] -= resultVector[i];
         }
 
-        double temp = dotProduct(r_k, r_k) / dotProduct(VectorProduct(matrix, r_k), r_k);
+        // printVector(r_k);
+        // printVector(resultVector);
+
+        if (abs(norm(r_k)) < 10e-15)
+        {
+            break;
+        }
+
+        double long temp = dotProduct(r_k, r_k) / dotProduct(VectorProduct(matrix, r_k), r_k);
 
         for (size_t i = 0; i < r_k.size(); i++)
         {
@@ -89,8 +99,7 @@ vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resu
         }
 
         x_k1 = approxiamateResult;
-
-        x_k = approxiamateResult;
+        x_k = x_k1;
 
     }
 
@@ -99,7 +108,7 @@ vector_d gradientSolve(const std::vector<vector_d>& matrix, const vector_d& resu
 
 void swap_rows(std::vector<vector_d>& matrix, int row1, int row2, int n) {
     for (int i = 0; i <= n; i++) {
-        double temp = matrix[row1][i];
+        long double temp = matrix[row1][i];
         matrix[row1][i] = matrix[row2][i];
         matrix[row2][i] = temp;
     }
@@ -113,7 +122,7 @@ std::vector<vector_d> forwardElimination(const std::vector<vector_d>& Matrix)
     for (size_t i = 0; i < n; i++) {
         // Поиск главного элемента в текущей подматрице
         int max_row = i;
-        double max_val = std::abs(matrix[i][i]);
+        long double max_val = std::abs(matrix[i][i]);
         for (size_t j = i + 1; j < n; j++)
         {
             for (size_t k = i + 1; k <= n; k++)
@@ -135,7 +144,7 @@ std::vector<vector_d> forwardElimination(const std::vector<vector_d>& Matrix)
         // Приведение матрицы к треугольному виду
         for (int j = i + 1; j < n; j++)
         {
-            double factor = matrix[j][i] / matrix[i][i];
+            long double factor = matrix[j][i] / matrix[i][i];
             for (int k = i; k <= n; k++)
             {
                 matrix[j][k] -= factor * matrix[i][k];
@@ -152,7 +161,7 @@ vector_d backSubstitution(const std::vector<vector_d>& matrix)
     int n = matrix.size();
     for (int i = n - 1; i >= 0; i--)
     {
-        double sum = 0.0;
+        long double sum = 0.0;
 
         for (int j = i + 1; j < n; j++)
         {
@@ -196,7 +205,7 @@ vector_d methodReflections(const std::vector<vector_d>& matrix, const vector_d& 
             }
         }
 
-        double alpha = sign(arg(dotProduct(s, s)) - M_PI) * std::sqrt(dotProduct(s, s));
+        long double alpha = sign(arg(dotProduct(s, s)) - M_PI) * std::sqrt(dotProduct(s, s));
 
         vector_d s_t(size, 0.0);
 
@@ -205,7 +214,7 @@ vector_d methodReflections(const std::vector<vector_d>& matrix, const vector_d& 
             s_t[i] = s[i] - alpha * e[i];
         }
 
-        double ka = 1 / std::sqrt(2 * alpha * alpha + 2 * std::abs(alpha) * dotProduct(s, e));
+        long double ka = 1 / std::sqrt(2 * alpha * alpha + 2 * std::abs(alpha) * dotProduct(s, e));
 
         vector_d w = s_t;
 
@@ -248,7 +257,7 @@ double det(const std::vector<vector_d>& matrix)
     vector_d temp(matrix.size(), 0.0);
     std::vector<vector_d> tr = forwardElimination(ExtendedMatrix(matrix, temp));
 
-    double result = 1.0;
+    long double result = 1.0;
 
     for (size_t i = 0; i < tr.size(); i++)
     {
@@ -260,13 +269,24 @@ double det(const std::vector<vector_d>& matrix)
 
 std::vector<vector_d> InvertedMatrix(const std::vector<vector_d>& matrix)
 {
-    std::vector<vector_d> inverted_matix(matrix.size(), vector_d(matrix.size(), 0.0));
+    size_t size = matrix.size();
 
-    for (size_t i = 0; i < matrix.size(); i++)
+    std::vector<vector_d> inverted_matix(size, vector_d(size, 0.0));
+
+    size_t j = 0;
+
+    for (size_t i = 0; i < size; i++)
     {
-        vector_d temp(matrix.size(), 0.0);
+        vector_d temp(size, 0.0);
         temp[i] = 1;
-        inverted_matix[i] = methodJakob(matrix, temp);
+
+        auto temp_k = methodReflections(matrix, temp);
+
+        for (size_t k = 0; k < size; k++)
+        {
+            inverted_matix[k][j] = temp_k[k];
+        }
+        j++;
     }
 
     return inverted_matix;

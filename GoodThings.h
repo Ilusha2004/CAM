@@ -11,12 +11,12 @@
 #include <string>
 #include <sstream>
 
-typedef std::vector<double> vector_d;
+typedef std::vector<long double> vector_d;
 
 // Функция для вычисления нормы вектора
-double vectorNorm(const vector_d& x)
+long double vectorNorm(const vector_d& x)
 {
-    double norm = 0.0;
+    long double norm = 0.0;
     for (auto value : x)
     {
         norm += std::abs(value);
@@ -24,9 +24,9 @@ double vectorNorm(const vector_d& x)
     return norm;
 }
 
-double MatrixNorm(const std::vector<vector_d>& matrix)
+long double MatrixNorm(const std::vector<vector_d>& matrix)
 {
-    double sum = 0.0;
+    long double sum = 0.0;
 
     for (auto& row : matrix)
     {
@@ -88,7 +88,7 @@ void printMatrix(const std::vector<vector_d>& matrix)
     {
         for (auto element : row)
         {
-            std::cout << element << " " << std::setprecision(4);
+            std::cout << element << " " << std::setprecision(20);
         }
         std::cout << std::endl;
     }
@@ -115,7 +115,7 @@ void printSolution(const vector_d& solution)
     }
 }
 
-double norm(const vector_d& vec)
+long double norm(const vector_d& vec)
 {
     return *std::max_element(vec.begin(), vec.end(), [](double a, double b)
     {
@@ -140,9 +140,9 @@ vector_d VectorProduct(const std::vector<vector_d>& matrix, const vector_d& vect
     return result;
 }
 
-double dotProduct(const vector_d leftVector, const vector_d rightVector, int index = 0)
+long double dotProduct(const vector_d leftVector, const vector_d rightVector, int index = 0)
 {
-    double result = 0.0;
+    long double result = 0.0;
 
     for (size_t i = index; i < leftVector.size(); i++)
     {
